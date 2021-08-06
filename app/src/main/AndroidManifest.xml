@@ -11,6 +11,12 @@
         android:theme="@style/Theme.ScannerBuddy">
         <activity
             android:name=".MainActivity"
+            android:exported="true" />
+        <activity
+            android:name=".Welcome"
+            android:exported="true" />
+        <activity
+            android:name=".Start"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
