@@ -70,4 +70,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+    public void GalleryImage(View view) {
+        startActivity(new Intent(this, GalleryImage.class));
+    }
 }

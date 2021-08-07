@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".GalleryImage">
+
+    <ImageSwitcher
+        android:id="@+id/imageswitch"
+        android:layout_width="248dp"
+        android:layout_margin="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="350dp" />
+
+
+        <Button
+            android:onClick="prevBtn"
+            android:id="@+id/preImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imageswitch"
+            android:background="@drawable/round_button"
+            android:layout_marginStart="20dp"
+            android:text="Previous"/>
+        <Button
+            android:onClick="nextBtn"
+            android:id="@+id/nextImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imageswitch"
+            android:background="@drawable/round_button"
+            android:layout_marginEnd="20dp"
+            android:layout_alignParentEnd="true"
+            android:text="Next"/>
+
+
+    <Button
+        android:onClick="openGalleryBtn"
+        android:id="@+id/galleryBtn"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/round_button"
+        android:layout_below="@id/nextImage"
+        android:text="Open Gallery"/>
+
+    <Button
+        android:onClick="CreatePDF"
+        android:id="@+id/createPdf"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/round_button"
+        android:layout_below="@id/galleryBtn"
+        android:text="Create PDF"/>
+
+
+
+</RelativeLayout>

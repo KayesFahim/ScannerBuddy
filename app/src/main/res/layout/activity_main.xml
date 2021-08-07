@@ -7,6 +7,15 @@
     android:background="@color/background"
     tools:context=".MainActivity">
 
+    <Button
+        android:onClick="GalleryImage"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/round_button"
+        android:text="Select From Gallery"/>
+
+
     <ImageView
         android:onClick="check"
         android:layout_width="80dp"
