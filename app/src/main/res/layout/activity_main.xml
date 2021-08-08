@@ -7,13 +7,15 @@
     android:background="@color/background"
     tools:context=".MainActivity">
 
-    <Button
-        android:onClick="GalleryImage"
-        android:layout_width="250dp"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@drawable/round_button"
-        android:text="Select From Gallery"/>
+        android:layout_alignParentStart="true"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/documents" />
 
 
     <ImageView
@@ -23,17 +25,25 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="20sp"
-        android:layout_marginBottom="30sp"
+        android:layout_marginBottom="90sp"
         android:src="@drawable/camera_circle" />
 
     <ImageView
-        android:onClick="check"
+        android:onClick="goGallery"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="35sp"
-        android:layout_marginBottom="43sp"
+        android:layout_marginBottom="105sp"
         android:src="@drawable/camera_icon" />
+
+    <com.facebook.ads.NativeAdLayout
+        android:id="@+id/native_banner_ad_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true" />
+
 
 </RelativeLayout>
