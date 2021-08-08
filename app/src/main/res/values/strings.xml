@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ScannerBuddy</string>
+    <string name="create_pdf">Create PDF</string>
 </resources>

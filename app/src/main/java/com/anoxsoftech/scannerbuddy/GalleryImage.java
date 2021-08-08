@@ -2,6 +2,8 @@ package com.anoxsoftech.scannerbuddy;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -20,11 +22,14 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.itextpdf.text.PageSize;
 import com.tom_roush.pdfbox.pdmodel.PDDocument;
 import com.tom_roush.pdfbox.pdmodel.PDPage;
 
@@ -34,6 +39,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,18 +48,20 @@ import java.util.Locale;
 
 public class GalleryImage extends AppCompatActivity {
 
+    Button createpdfBtn;
     ImageSwitcher imageSwitcher;
     private ArrayList<Uri> imageUris;
     private static final int PIC_IMAGE_CODE = 0;
     int position = 0;
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery_image);
 
         imageSwitcher = findViewById(R.id.imageswitch);
+        createpdfBtn = findViewById(R.id.createPdf);
+
 
         imageUris = new ArrayList<>();
 
@@ -124,22 +132,41 @@ public class GalleryImage extends AppCompatActivity {
     }
 
     public void CreatePDF(View view) {
-        File file = getOutputFile();
-        if (file != null) {
+        if (ContextCompat.checkSelfPermission(GalleryImage.this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(GalleryImage.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            } else {
+                ActivityCompat.requestPermissions(GalleryImage.this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        1000);
+            }
+        } else {
+            //Save PDF file
+
+            //Create time stamp
+            Date date = new Date();
+            @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("_yyyy_MM_dd_HH_mm_ss").format(date);
+
+            String filePath = Environment.getExternalStorageDirectory() + "/" + "PDF" + timeStamp + ".pdf";
+
+            File myFile = new File(filePath);
+
             try {
-                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                FileOutputStream fileOutputStream = new FileOutputStream(myFile);
                 PdfDocument pdfDocument = new PdfDocument();
 
                 for (int i = 0; i < imageUris.size(); i++) {
                     InputStream inStream = getContentResolver().openInputStream(imageUris.get(i));
                     Bitmap bitmap = BitmapFactory.decodeStream(inStream);
-                    PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(bitmap.getWidth(), bitmap.getHeight(), (i + 1)).create();
+                    PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(720, 1280, (i + 1)).create();
                     PdfDocument.Page page = pdfDocument.startPage(pageInfo);
                     Canvas canvas = page.getCanvas();
                     Paint paint = new Paint();
                     paint.setColor(Color.BLUE);
 
-                    bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(),bitmap.getHeight(), true);
+                    bitmap = Bitmap.createScaledBitmap(bitmap, 720, 1280, true);
                     canvas.drawPaint(paint);
                     canvas.drawBitmap(bitmap, 0f, 0f, null);
                     pdfDocument.finishPage(page);
@@ -152,26 +179,8 @@ public class GalleryImage extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    private File getOutputFile() {
-        File root = new File(Environment.getExternalStorageDirectory(),"MY PDF Folder");
-
-        boolean isFolderCreated = true;
-
-        if (!root.exists()) {
-            isFolderCreated = root.mkdir();
+            Toast.makeText(this, "PDf Created", Toast.LENGTH_SHORT).show();
         }
 
-        if (isFolderCreated) {
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
-            String imageFileName = "PDF_" + timeStamp;
-
-            return new File(root, imageFileName + ".pdf");
-        } else {
-            Toast.makeText(this, "Folder is not created", Toast.LENGTH_SHORT).show();
-            return null;
-        }
     }
 }

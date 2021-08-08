@@ -56,7 +56,7 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/round_button"
         android:layout_below="@id/galleryBtn"
-        android:text="Create PDF"/>
+        android:text="@string/create_pdf"/>
 
 
 
