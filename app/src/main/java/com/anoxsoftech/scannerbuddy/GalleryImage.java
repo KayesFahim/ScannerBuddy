@@ -2,6 +2,8 @@ package com.anoxsoftech.scannerbuddy;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -29,9 +31,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import javax.microedition.khronos.opengles.GL;
 
 
 public class GalleryImage extends AppCompatActivity {
@@ -121,22 +126,9 @@ public class GalleryImage extends AppCompatActivity {
 
     public void CreatePDF(View view) {
 
-        //Save PDF file
-
-        //Create time stamp
-        Date date = new Date();
-        @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("_yyyy_MM_dd_HH_mm_ss").format(date);
-
-        File root = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Scanner Buddy Folder");
-
-        if (!root.exists()) {
-            root.mkdir();
-        } else {
-
-            File myFile = new File(root, "ScannerBuddy_PDF_" + timeStamp + ".pdf");
 
             try {
-                FileOutputStream fileOutputStream = new FileOutputStream(myFile);
+
                 PdfDocument pdfDocument = new PdfDocument();
 
                 for (int i = 0; i < imageUris.size(); i++) {
@@ -158,17 +150,47 @@ public class GalleryImage extends AppCompatActivity {
                     pdfDocument.finishPage(page);
                     bitmap.recycle();
                 }
+                if (ContextCompat.checkSelfPermission(GalleryImage.this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(GalleryImage.this,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    } else {
+                        // No explanation needed; request the permission
+                        ActivityCompat.requestPermissions(GalleryImage.this,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                1000);
+                    }
+                } else {
+                    //Save PDF file
 
-                pdfDocument.writeTo(fileOutputStream);
+                    //Create time stamp
+                    Date date = new Date() ;
+                    @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat("_yyyy_MM_dd_HH_mm_ss").format(date);
+
+
+
+                    String filePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) +"/"+  "ScannerBuddy_" +timeStamp+ ".pdf";
+
+                    File myFile = new File(filePath);
+
+                    try {
+                        OutputStream output = new FileOutputStream(myFile);
+                        pdfDocument.writeTo(output);
+                        output.flush();
+                        output.close();
+                        Toast.makeText(GalleryImage.this, "PDF Created Succesfully", Toast.LENGTH_LONG).show();
+                        Toast.makeText(GalleryImage.this, "PDF Saved On Memory", Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
                 pdfDocument.close();
-                Toast.makeText(this, "PDF Created Successfully", Toast.LENGTH_SHORT).show();
-                Toast.makeText(this, "PDF Save Successfully", Toast.LENGTH_SHORT).show();
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
         }
-    }
 }
 
